@@ -1,0 +1,17 @@
+{
+  "name": "myreco-admin",
+  "homepage": "https://github.com/dutradda/myreco-admin",
+  "authors": [
+    "Diogo Dutra <dutradda@gmail.com>"
+  ],
+  "description": "Administration Interface for Myreco API",
+  "main": "src/main.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
