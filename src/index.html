@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <title>Hello Riot.</title>
+  </head>
+  <body>
+    <myreco-admin></myreco-admin>
+    <script type="riot/tag" src="myreco-admin.tag"></script>
+    <script type="riot/tag" src="login.tag"></script>
+    <script type="riot/tag" src="main.tag"></script>
+    <script type="riot/tag" src="placements.tag"></script>
+    <script type="riot/tag" src="not-found.tag"></script>
+    <script src="https://cdn.jsdelivr.net/babel/5.8.23/browser.js"></script>
+    <script src="https://cdn.jsdelivr.net/riot/2.6/riot+compiler.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/2.3.0/superagent.min.js"></script>
+    <script src="myreco_client.js"></script>
+    <script src="store.min.js"></script>
+    <script>
+      riot.mount(
+        'myreco-admin', {
+          apiUriPrefix: 'http://localhost:3000',
+          routeBase: '#'
+        }
+      )
+    </script>
+  </body>
+</html>
