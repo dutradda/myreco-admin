@@ -33,28 +33,33 @@ class MyrecoClient {
     this.password = password
   }
 
-  get(sufix, success, failure, query) {
+  get(sufix, success, failure, query, data) {
     let url = this._process_url(sufix)
-    return this._process_request(superagent.get(url), query, success, failure)
+    return this._process_request(superagent.get(url), query, data, success, failure)
   }
 
   _process_url(sufix) {
     return `${this.api_uri}${sufix}`
   }
 
-  _process_request(req, query, success, failure) {
+  _process_request(req, query, data, success, failure) {
     if (this.user != undefined && this.password != undefined)
-      req = req.query(query).auth(this.user, this.password)
-    return req.withCredentials().then(success, failure)
+      req = req.auth(this.user, this.password)
+    return req.query(query).send(data).then(success, failure)
   }
 
-  post(sufix, success, failure, query) {
-    url = this._process_url(sufix)
-    return this._process_request(request.post(url), success, failure)
+  post(sufix, success, failure, query, data) {
+    let url = this._process_url(sufix)
+    return this._process_request(superagent.post(url), query, data, success, failure)
   }
 
-  patch(sufix, success, failure, query) {
-    url = this._process_url(sufix)
-    return this._process_request(request.patch(url), success, failure)
+  patch(sufix, success, failure, query, data) {
+    let url = this._process_url(sufix)
+    return this._process_request(superagent.patch(url), query, data, success, failure)
+  }
+
+  delete(sufix, success, failure, query, data) {
+    let url = this._process_url(sufix)
+    return this._process_request(superagent.delete(url), query, data, success, failure)
   }
 }

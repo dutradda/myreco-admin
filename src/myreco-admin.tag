@@ -17,30 +17,29 @@
         logout: 'logout',
         notFound: 'not-found'
       }
-      this.user = store.get('myrecoUser')
-      this.registerRoutes()
+      this.setUser(store.get('myrecoUser'))
 
       if (this.user != undefined) {
         this.myrecoApi = new MyrecoClient(
             opts.apiUriPrefix,
             this.user.email,
             this.user.password)
-        riot.route(this.collections.placements)
       }
       else {
         this.myrecoApi = new MyrecoClient(opts.apiUriPrefix)
-        riot.route(this.pages.login)
       }
+
+      this.registerRoutes()
     }
 
     this.registerRoutes = () => {
       riot.route.base(opts.routeBase)
       riot.route(this.route)
-      riot.route.start()
+      riot.route.start(true)
     }
 
     this.route = (uri, action, id) => {
-      if (uri == this.pages.login) {
+      if (uri == this.pages.login || uri == '') {
         this.mountLogin()
       }
       else if (uri == this.pages.logout) {
@@ -48,7 +47,7 @@
         riot.route(this.pages.login)
       }
       else if (uri in this.collections) {
-        this.mountMain(uri, action, id)  
+        this.mountMain(uri, action, id)
       }
       else {
         riot.route(this.pages.notFound)
@@ -60,17 +59,24 @@
       riot.mount(this.content, this.pages.login, {app: this})
     }
 
-    this.mountMain = (uri, action, id) => {
-      riot.mount(this.content,
-        this.pages.main, {
+    this.mountMain = (uri, action, id_) => {
+      opts = {
         app: this,
-        uri: uri, action: action, id: id
-      })
+        uri: uri,
+        action: action,
+        id_: id_
+      }
+      riot.mount(this.content, this.pages.main, opts)
     }
 
     this.setUser = (user) => {
       this.user = user
-      store.set('myrecoUser', user)
+
+      if (this.user != undefined && this.user.selected_store == undefined && this.user.stores.length > 0)
+        this.user.selected_store = this.user.stores[0].id
+
+      if (this.user != undefined)
+        store.set('myrecoUser', this.user)
     }
 
     this.delUser = () => {

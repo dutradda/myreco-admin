@@ -1,5 +1,16 @@
 <login>
 
+	<h1>LOGIN</h1>
+
+	<form>
+		<label>Email:</label>
+		<input type="text" name="email">
+		<label>Password:</label>
+		<input type="password" name="password">
+	</form>
+
+	<button onclick={login}>OK</button>
+
 	<script type="es6">
 		'use strict;'
 		this.app = opts.app
@@ -22,16 +33,5 @@
 			this.app.delUser()
 		}
 	</script>
-
-	<h1>LOGIN</h1>
-
-	<form>
-		<label>Email:</label>
-		<input type="text" name="email">
-		<label>Password:</label>
-		<input type="password" name="password">
-	</form>
-
-	<button onclick={login}>OK</button>
 
 </login>
