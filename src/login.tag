@@ -1,15 +1,17 @@
 <login>
 
-	<h1>LOGIN</h1>
-
 	<form>
-		<label>Email:</label>
-		<input type="text" name="email">
-		<label>Password:</label>
-		<input type="password" name="password">
+		<fieldset>
+			<legend><h3>LOGIN</h3></legend>
+			<br/>
+			<label>Email:</label>
+			<input type="text" name="email">
+			<label>Password:</label>
+			<input type="password" name="password">
+			<br/><br/>
+			<button onclick="{login}">OK</button>
+		</fieldset>
 	</form>
-
-	<button onclick={login}>OK</button>
 
 	<script type="es6">
 		'use strict;'

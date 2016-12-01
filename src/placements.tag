@@ -74,50 +74,56 @@
 </placements>
 
 <placements-list>
-    <button onclick="{ createOnClick }">Create new placement</button>
-    <ul>
-        <li each={ placementsViewData }>
-            <b>Name:&nbsp;</b>{ name }
-            <br/>
-            <b>Hash:&nbsp;</b>{ hash }
-            <br/>
-            <b>Small Hash:&nbsp;</b>{ small_hash }
-            <br/>
-            <b>Distribute Recommendations:</b>
-            <input type="checkbox" checked="{ distribute_recos }" disabled />
-            <br/>
-            <b>In A/B Test:</b>
-            <input type="checkbox" checked="{ ab_testing }" disabled />
-            <br/>
-            <b>Show Recommendations Details:</b>
-            <input type="checkbox" checked="{ show_details }" disabled />
-            <br/>
-            <b>Variations:</b>
-            <ul>
-                <li each={ variations }>
-                    <p>
-                        <b>Id:&nbsp;</b>{ id }
-                        <br/>
-                        <b>Weight:&nbsp;</b>{ weight }
-                        <br/><br/>
-                        <b>Slots:</b>
-                        <ul>
-                            <li each={ slots }>
-                                <p>
+
+    <form>
+        <fieldset>
+        <legend><h3>All Placements</h3></legend>
+        <br/>
+        <button onclick="{ createOnClick }">Create new placement</button>
+        <br/><br/>
+        <ul>
+            <li each={ placementsViewData }>
+                <fieldset>
+                    <b>Name:&nbsp;</b>{ name }
+                    <br/>
+                    <b>Hash:&nbsp;</b>{ hash }
+                    <br/>
+                    <b>Small Hash:&nbsp;</b>{ small_hash }
+                    <br/>
+                    <b>Distribute Recommendations:</b>
+                    <input type="checkbox" checked="{ distribute_recos }" disabled />
+                    <br/>
+                    <b>In A/B Test:</b>
+                    <input type="checkbox" checked="{ ab_testing }" disabled />
+                    <br/>
+                    <b>Show Recommendations Details:</b>
+                    <input type="checkbox" checked="{ show_details }" disabled />
+                    <br/>
+                    <b>Variations:</b>
+                    <ul>
+                        <li each={ variations }>
+                            <b>Id:&nbsp;</b>{ id }
+                            <br/>
+                            <b>Weight:&nbsp;</b>{ weight }
+                            <br/><br/>
+                            <b>Slots:</b>
+                            <ul>
+                                <li each={ slots }>
                                     <b>Id:&nbsp;</b>{ id }
                                     <br/>
                                     <b>name:&nbsp;</b>{ name }
-                                </p>
-                            </li>
-                        </ul>
-                    </p>
-                </li>
-            </ul>
-            <button onclick="{ editOnClick }">Edit</button>&nbsp;
-            <button onclick="{ deleteOnClick }">Delete</button>
-            <br/><br/>
-        </li>
-    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <button onclick="{ editOnClick }">Edit</button>&nbsp;
+                    <button onclick="{ deleteOnClick }">Delete</button>
+                </fieldset>
+                <br/>
+            </li>
+        </ul>
+        </fieldset>
+    </form>
 
     <script type="es6">
         'use strict;'
@@ -148,40 +154,50 @@
             this.update()
         }
     </script>
+
 </placements-list>
 
 <placement-edit>
-    <label>Hash:</label>{ placementViewData.hash }
-    <br/>
-    <label>Small Hash:</label>{ placementViewData.small_hash }
-    <br/>
-    <label>Name:</label>
-    <input type="text" id="name" value="{ placementViewData.name }" onkeyup="{ onKeyUp }"/>
-    <br/>
-    <label>Store Id:</label>
-    <input type="text" id="store_id" value="{ placementViewData.store_id }" onkeyup="{ onKeyUp }"/>
-    <br/>
-    <label>Distribute Recommendations:</label>
-    <input type="checkbox" id="distribute_recos" checked="{ placementViewData.distribute_recos }" onclick="{ onCheckBoxClick }"/>
-    <br/>
-    <label>In A/B Test:</label>
-    <input type="checkbox" id="ab_testing" checked="{ placementViewData.ab_testing }" onclick="{ onCheckBoxClick }"/>
-    <br/>
-    <label>Show Recommendations Details:</label>
-    <input type="checkbox" id="show_details" checked="{ placementViewData.show_details }" onclick="{ onCheckBoxClick }"/>
-    <br/>
-    <label>Variations:</label>
-    <ul>
-        <li each={ variation in placementViewData.variations }>
-            <variation-edit variation="{ variation }"/>
-            <button onclick="{ deleteVariationOnClick }">Delete Variation</button>
-        </li>
-    </ul>
-    <br/>
-    <button onclick="{ addVariationOnClick }">Add Variation</button>
-    <br/>
-    <button onclick="{ cancelOnClick }">Cancel</button>
-    <button onclick="{ okOnClick }">OK</button>
+
+    <form>
+        <fieldset>
+        <legend><h3>{ ((this.create) ? 'New ' : 'Edit ') + 'Placement'}</h3></legend>
+        <label>Hash:</label>{ placementViewData.hash }
+        <br/>
+        <label>Small Hash:</label>{ placementViewData.small_hash }
+        <br/>
+        <label>Name:</label>
+        <input type="text" id="name" value="{ placementViewData.name }" onkeyup="{ onKeyUp }"/>
+        <br/>
+        <label>Store Id:</label>
+        <input type="text" id="store_id" value="{ placementViewData.store_id }" onkeyup="{ onKeyUp }"/>
+        <br/>
+        <label>Distribute Recommendations:</label>
+        <input type="checkbox" id="distribute_recos" checked="{ placementViewData.distribute_recos }" onclick="{ onCheckBoxClick }"/>
+        <br/>
+        <label>In A/B Test:</label>
+        <input type="checkbox" id="ab_testing" checked="{ placementViewData.ab_testing }" onclick="{ onCheckBoxClick }"/>
+        <br/>
+        <label>Show Recommendations Details:</label>
+        <input type="checkbox" id="show_details" checked="{ placementViewData.show_details }" onclick="{ onCheckBoxClick }"/>
+        <br/>
+        <label>Variations:</label>
+        <ul>
+            <li each={ variation in placementViewData.variations }>
+                <fieldset>
+                    <variation-edit variation="{ variation }"/>
+                    <button onclick="{ deleteVariationOnClick }">Delete Variation</button>
+                </fieldset>
+                <br/>
+            </li>
+        </ul>
+        <br/>
+        <button onclick="{ addVariationOnClick }">Add Variation</button>
+        <br/>
+        <button onclick="{ cancelOnClick }">Cancel</button>
+        <button onclick="{ okOnClick }">OK</button>
+        </fieldset>
+    </form>
 
     <script type="es6">
         'use strict;'
@@ -289,29 +305,29 @@
             this.update()
         }
     </script>
+
 </placement-edit>
 
 
 <variation-edit>
-    <p>
-        <label>Id:</label>{ opts.variation.id }
-        <br/>
-        <label>Weight:</label>
-        <input type="text" id="weight" value="{ opts.variation.weight }" onkeyup="{ onWeightKeyUp }"/>
-        <br/>
-        <label>Slots:</label>
-        <ul id="slotsList">
-            <li each={ opts.variation.slots }>
-                <p>{id} - { name }</p>
-                <button onclick="{ removeSlotOnClick }">Remove Slot</button>
-            </li>
-        </ul>
-        <br/>
-        <select id="addSlotSelect" hidden>
-            <option each={ available_slots } value="{ id }">{ name }</option>
-        </select>
-        <button id="addSlotButton" onclick="{ addSlotButtonOnClick }">Add Slot</button>
-    </p>
+
+    <label>Id:</label>{ opts.variation.id }
+    <br/>
+    <label>Weight:</label>
+    <input type="text" id="weight" value="{ opts.variation.weight }" onkeyup="{ onWeightKeyUp }"/>
+    <br/>
+    <label>Slots:</label>
+    <ul id="slotsList">
+        <li each={ opts.variation.slots }>
+            {id} - { name }
+            <button onclick="{ removeSlotOnClick }">Remove Slot</button>
+        </li>
+    </ul>
+    <br/>
+    <select id="addSlotSelect" hidden>
+        <option each={ available_slots } value="{ id }">{ name }</option>
+    </select>
+    <button id="addSlotButton" onclick="{ addSlotButtonOnClick }">Add Slot</button>
 
     <script type="es6">
         'use strict;'
@@ -324,9 +340,9 @@
             }
 
             if (this.available_slots.length)
-                this.addSlotButton.hidden = false
+                this.addSlotButton.disabled = false
             else
-                this.addSlotButton.hidden = true
+                this.addSlotButton.disabled = true
         }
 
         this.setAvailableSlots()
@@ -398,4 +414,5 @@
             }
         }
     </script>
+
 </variation-edit>

@@ -1,5 +1,4 @@
 <main>
-  <h1>MyReco Admin</h1>
   <h2>{this.content_tag.title}</h2>
   <div id='content' style='padding:10px;background-color:#f2f2f2'></div>
 

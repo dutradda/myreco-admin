@@ -1,7 +1,4 @@
 <html>
-  <head>
-    <title>Hello Riot.</title>
-  </head>
   <body>
     <myreco-admin></myreco-admin>
     <script type="riot/tag" src="myreco-admin.tag"></script>
@@ -18,7 +15,8 @@
       riot.mount(
         'myreco-admin', {
           apiUriPrefix: 'http://localhost:10000',
-          routeBase: '#'
+          routeBase: '',
+          title: 'MyReco Administration'
         }
       )
     </script>

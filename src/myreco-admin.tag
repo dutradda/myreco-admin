@@ -1,5 +1,13 @@
 <myreco-admin>
-  <div id='content' style='padding:10px;background-color:#f2f2f2'></div>
+  <style type="text/css">
+    ul {
+      list-style: none;
+    }
+  </style>
+
+  <h1>{ opts.title }</h1>
+
+  <div id='content' style='padding:1px;background-color:#f2f2f2'></div>
 
   <script type="es6">
     'use strict;'
@@ -8,6 +16,7 @@
     // import riot from 'riot'
 
     this.init = () => {
+      document.title = opts.title
       this.collections = {
         placements: 'placements'
       }
