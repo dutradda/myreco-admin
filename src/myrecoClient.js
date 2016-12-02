@@ -28,7 +28,7 @@ class MyrecoClient {
     this.password = password
   }
 
-  set_user(user, password) {
+  setUser(user, password) {
     this.user = user
     this.password = password
   }

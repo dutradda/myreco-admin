@@ -1,98 +1,105 @@
 <myreco-admin>
-  <style type="text/css">
-    ul {
-      list-style: none;
-    }
-  </style>
 
-  <h1>{ opts.title }</h1>
+    <style type="text/css">
+        ul {
+            list-style: none;
+        }
+    </style>
 
-  <div id='content' style='padding:1px;background-color:#f2f2f2'></div>
+    <h1>{ opts.title }</h1>
 
-  <script type="es6">
-    'use strict;'
+    <div style='padding:1px;background-color:#f2f2f2'>
+        <virtual ref="page"/>
+    </div>
 
-    // import store from 'store.js'
-    // import riot from 'riot'
+    <script>
+        'use strict;'
 
-    this.init = () => {
-      document.title = opts.title
-      this.collections = {
-        placements: 'placements'
-      }
-      this.pages = {
-        main: 'main',
-        login: 'login',
-        logout: 'logout',
-        notFound: 'not-found'
-      }
-      this.setUser(store.get('myrecoUser'))
+        this.init = () => {
+            document.title = opts.title
+            this.routeBase = opts.routeBase
 
-      if (this.user != undefined) {
-        this.myrecoApi = new MyrecoClient(
-            opts.apiUriPrefix,
-            this.user.email,
-            this.user.password)
-      }
-      else {
-        this.myrecoApi = new MyrecoClient(opts.apiUriPrefix)
-      }
+            this.pages = {
+                login: 'login',
+                logout: 'logout',
+                main: 'main',
+                notFound: 'not-found'
+            }
 
-      this.registerRoutes()
-    }
+            this.setUser(store.get('myrecoUser'))
+            this.setMyrecoClient()
+            this.registerRoutes()
+        }
 
-    this.registerRoutes = () => {
-      riot.route.base(opts.routeBase)
-      riot.route(this.route)
-      riot.route.start(true)
-    }
+        this.setUser = (user) => {
+            this.user = user
 
-    this.route = (uri, action, id) => {
-      if (uri == this.pages.login || uri == '') {
-        this.mountLogin()
-      }
-      else if (uri == this.pages.logout) {
-        this.delUser()
-        riot.route(this.pages.login)
-      }
-      else if (uri in this.collections) {
-        this.mountMain(uri, action, id)
-      }
-      else {
-        riot.route(this.pages.notFound)
-        riot.mount(this.content, this.pages.notFound)
-      }
-    }
+            if (this.user != undefined) {
+                store.set('myrecoUser', this.user)
+                if (this.user.selectedStore == undefined && this.user.stores.length > 0)
+                    this.user.selectedStore = this.user.stores[0].id
+            }
+        }
 
-    this.mountLogin = () => {
-      riot.mount(this.content, this.pages.login, {app: this})
-    }
+        this.setMyrecoClient = () => {
+            if (this.user != undefined) {
+                this.myrecoApi = new MyrecoClient(
+                    opts.apiUriPrefix,
+                    this.user.email,
+                    this.user.password)
+            } else
+                this.myrecoApi = new MyrecoClient(opts.apiUriPrefix)
+        }
 
-    this.mountMain = (uri, action, id_) => {
-      opts = {
-        app: this,
-        uri: uri,
-        action: action,
-        id_: id_
-      }
-      riot.mount(this.content, this.pages.main, opts)
-    }
+        this.registerRoutes = () => {
+          route.base(this.routeBase)
+          route(this.route)
+          route.start(true)
+        }
 
-    this.setUser = (user) => {
-      this.user = user
+        this.route = (uri, action, id) => {
+            if (uri == this.pages.login)
+                this.mountPage(uri)
 
-      if (this.user != undefined && this.user.selected_store == undefined && this.user.stores.length > 0)
-        this.user.selected_store = this.user.stores[0].id
+            else if (this.user == undefined || uri == this.pages.logout)
+                this.logout()
 
-      if (this.user != undefined)
-        store.set('myrecoUser', this.user)
-    }
+            else  {
+                this.mountPage(this.pages.main)
+                this.page.setContentTag(uri, action, id)
+            }
 
-    this.delUser = () => {
-      this.user = undefined
-      store.remove('myrecoUser')
-    }
+        }
 
-    this.init()
+        this.mountPage = (tagName) => {
+            this.page = riot.mount(this.refs.page, tagName, {app: this})[0]
+        }
+
+        this.logout = () => {
+            this.user = undefined
+            store.remove('myrecoUser')
+            route(this.pages.login)
+        }
+
+        this.success = (uri) => {
+            return () => {route(uri)}
+        }
+
+        this.failure = (error) => {
+            console.log({status: error.response.status, body: error.response.body})
+            if (error.response.status == 401)
+                this.logout()
+        }
+
+        this.setPageNotFound = () => {
+            this.mountPage(this.pages.notFound)
+        }
+
+        this.findCallback = (id) => {
+            return (item) => { return (item.id == id) }
+        }
+
+        this.on('mount', this.init)
   </script>
+
 </myreco-admin>

@@ -4,18 +4,21 @@
     <script type="riot/tag" src="myreco-admin.tag"></script>
     <script type="riot/tag" src="login.tag"></script>
     <script type="riot/tag" src="main.tag"></script>
-    <script type="riot/tag" src="placements.tag"></script>
     <script type="riot/tag" src="not-found.tag"></script>
+    <script type="riot/tag" src="placements/placements-list.tag"></script>
+    <script type="riot/tag" src="placements/placement-edit.tag"></script>
+    <script type="riot/tag" src="placements/variation-edit.tag"></script>
+    <script src="myrecoClient.js"></script>
     <script src="https://cdn.jsdelivr.net/babel/5.8.23/browser.js"></script>
-    <script src="https://cdn.jsdelivr.net/riot/2.6/riot+compiler.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/riot/3.0.1/riot+compiler.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/riot-route/3.0.1/route.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/2.3.0/superagent.min.js"></script>
-    <script src="myreco_client.js"></script>
-    <script src="store.min.js"></script>
+    <script src="https://cdn.bootcss.com/store.js/1.3.20/store.min.js"></script>
     <script>
       riot.mount(
         'myreco-admin', {
           apiUriPrefix: 'http://localhost:10000',
-          routeBase: '',
+          routeBase: '#',
           title: 'MyReco Administration'
         }
       )
