@@ -1,22 +1,32 @@
 <variation-edit>
-
-    <label>Id:</label>{ opts.variation.id }
-    <br/>
-    <label>Weight:</label>
-    <input type="text" id="weight" value="{ opts.variation.weight }" onkeyup="{ onWeightKeyUp }"/>
-    <br/>
-    <label>Slots:</label>
-    <ul id="slotsList">
-        <li each={ opts.variation.slots }>
-            {id} - { name }
-            <button onclick="{ removeSlotOnClick }">Remove Slot</button>
-        </li>
-    </ul>
-    <br/>
-    <select ref="slotsSelect" hidden>
-        <option each={ available_slots } value="{ id }">{ name }</option>
-    </select>
-    <button ref="addSlotButton" onclick="{ addSlotButtonOnClick }" hidden>Add Slot</button>
+    <fieldset>
+        <div if={this.opts.variation.id}>
+            Id: {this.opts.variation.id}
+            <br/>
+        </div>
+        <div style="width:3em;">
+            <label>Weight:</label>
+            <input type="text" id="weight" value={this.opts.variation.weight} onkeyup={this.onWeightKeyUp}/>
+        </div>
+        <div>
+            <div style="margin-bottom:0.2em;" if={this.opts.variation.slots}>
+                <br/>
+                <div><b>Slots</b></div>
+                <div each={slot in this.opts.variation.slots}>
+                    <div>
+                        <div>
+                            {slot.id} - {slot.name}
+                            <button onclick={this.removeSlotOnClick}><b>Remove</b></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <select ref="slotsSelect" hidden>
+                <option each={slot in this.available_slots} ref={'slot_' + slot.id} value={slot.id}>{slot.name}</option>
+            </select>
+            <b><button ref="addSlotButton" onclick={this.addSlotButtonOnClick} hidden>Add Slot</button></b>
+        </div>
+    </fieldset>
 
     <script>
         'use strict;'
@@ -35,7 +45,7 @@
         }
 
         this.getPatchedVariation = () => {
-            patchedVariation = this.parent.patchedVariations.find(opts.app.findCallback(opts.variation.id))
+            patchedVariation = this.parent.patchedVariations.find(router.findCallback(opts.variation.id))
             if (patchedVariation == undefined) {
                 patchedVariation = {id: opts.variation.id, _operation: 'update'}
                 this.parent.patchedVariations.push(patchedVariation)
@@ -50,16 +60,16 @@
                 if (patchedVariation.slots == undefined)
                     patchedVariation.slots = []
 
-                patchedVariation.slots.push({id: event.item.id, _operation: 'remove'})
+                patchedVariation.slots.push({id: event.item.slot.id, _operation: 'remove'})
             }
 
-            this.parent.removeItemFromArray(opts.variation.slots, event.item)
+            this.parent.removeItemFromArray(opts.variation.slots, event.item.slot)
             this.deleteEmptySlots(opts.variation)
             this.setAvailableSlots(this.getSlotsCallback)
         }
 
         this.removeSlotFromPatchedVariation = (patchedVariation, slotId) => {
-            let slotFound = patchedVariation.slots.find(opts.app.findCallback(slotId))
+            let slotFound = patchedVariation.slots.find(router.findCallback(slotId))
             this.parent.removeItemFromArray(patchedVariation.slots, slotFound)
             this.deleteEmptySlots(patchedVariation)
         }
@@ -78,7 +88,7 @@
 
             else {
                 let slotId = JSON.parse(this.refs.slotsSelect.value)
-                let slotName = this.refs.slotsSelect.textContent
+                let slotName = this.refs['slot_'+slotId].textContent
 
                 if (this.parent.isNotNewVariation(opts.variation)) {
                     patchedVariation = this.getPatchedVariation()
@@ -95,14 +105,14 @@
         }
 
         this.setAvailableSlots = (callback) => {
-            opts.app.myrecoApi.get(`/slots?store_id=${opts.app.user.selectedStore}`, callback, this.failure)
+            router.myrecoApi.get(`/slots?store_id=${router.user.selectedStore}`, callback, this.failure)
         }
 
         this.getSlotsCallback = (response) => {
             this.available_slots = []
 
             for (let slot of response.body) {
-                if (opts.variation.slots == undefined || opts.variation.slots.find(opts.app.findCallback(slot.id)) == undefined)
+                if (opts.variation.slots == undefined || opts.variation.slots.find(router.findCallback(slot.id)) == undefined)
                     this.available_slots.push(slot)
             }
 
@@ -140,7 +150,7 @@
             if (error.response.status == 404)
                 this.disableSlotsSelect()
             else
-                opts.app.failure(error)
+                router.failure(error)
         }
 
         this.on('mount', () => {this.setAvailableSlots(this.getSlotsCallback)})

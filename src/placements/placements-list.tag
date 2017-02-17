@@ -1,78 +1,101 @@
 <placements-list>
-
-    <fieldset if={ placementsViewData != undefined }>
-    <legend><h3>All Placements</h3></legend>
-    <br/>
-    <button onclick="{ createOnClick }">Create new placement</button>
-    <br/><br/>
-    <ul>
-        <li each={ placementsViewData }>
-            <fieldset>
-                <b>Name:&nbsp;</b>{ name }
-                <br/>
-                <b>Hash:&nbsp;</b>{ hash }
-                <br/>
-                <b>Small Hash:&nbsp;</b>{ small_hash }
-                <br/>
-                <b>Distribute Recommendations:</b>
-                <input type="checkbox" checked="{ distribute_recos }" disabled />
-                <br/>
-                <b>In A/B Test:</b>
-                <input type="checkbox" checked="{ ab_testing }" disabled />
-                <br/>
-                <b>Show Recommendations Details:</b>
-                <input type="checkbox" checked="{ show_details }" disabled />
-                <br/>
-                <b>Variations:</b>
-                <ul>
-                    <li each={ variations }>
-                        <b>Id:&nbsp;</b>{ id }
-                        <br/>
-                        <b>Weight:&nbsp;</b>{ weight }
-                        <br/><br/>
-                        <b>Slots:</b>
-                        <ul>
-                            <li each={ slots }>
-                                <b>Id:&nbsp;</b>{ id }
-                                <br/>
-                                <b>name:&nbsp;</b>{ name }
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <button onclick="{ editOnClick }">Edit</button>&nbsp;
-                <button onclick="{ deleteOnClick }">Delete</button>
-            </fieldset>
-            <br/>
-        </li>
-    </ul>
-    </fieldset>
+    <virtual if={placementsViewData != undefined}>
+        <button onclick={createOnClick}><b>New Placement</b></button>
+        <br/><br/>
+        <table style="border: 1px solid;">
+            <thead>
+                <tr>
+                    <th style="border-top: 1px solid;">Name</th>
+                    <th style="border-top: 1px solid;">Small Hash</th>
+                    <th style="border-top: 1px solid;">Distribute</th>
+                    <th style="border-top: 1px solid;">Show Details</th>
+                    <th style="border-top: 1px solid;">In A/B Test</th>
+                    <th style="border-top: 1px solid;">Edit</th>
+                    <th style="border-top: 1px solid;">Delete</th>
+                </tr>
+            </thead>
+            <tbody each={placement in placementsViewData}>
+                <tr style="text-align:center;">
+                    <th style="border-top: 1px solid;">{placement.name}</th>
+                    <th style="border-top: 1px solid;">{placement.small_hash}</th>
+                    <th style="border-top: 1px solid;">{placement.distribute_recos}</th>
+                    <th style="border-top: 1px solid;">{placement.show_details}</th>
+                    <th style="border-top: 1px solid;">{placement.ab_testing}</th>
+                    <th style="border-top: 1px solid;"><button onclick={this.editOnClick}>Edit</button></th>
+                    <th style="border-top: 1px solid;"><button onclick={this.deleteOnClick}>Delete</button></th>
+                </tr>
+                <tr>
+                    <td colspan="7" style="border: 1px solid;">
+                        Variations:
+                        <table style="margin-left:2em;">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Weight</th>
+                                </tr>
+                            </thead>
+                            <tbody each={variation in placement.variations}>
+                                <tr style="text-align:center;">
+                                    <td>{variation.id}</td>
+                                    <td>{variation.weight ? JSON.stringify(variation.weigth) : 'null'}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="border: 1px solid;">
+                                        Slots:
+                                        <table style="margin-left:2em;">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Name</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody each={slot in variation.slots}>
+                                                <tr style="text-align:center;">
+                                                    <td>{slot.id}</td>
+                                                    <td>{slot.name}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2">
+                                                        
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </virtual>
 
     <script>
         'use strict;'
 
         this.updateView = () => {
-            let uri = `/placements?store_id=${opts.app.user.selectedStore}`
-            opts.app.myrecoApi.get(uri, this.updateViewCallback, opts.failure)
+            let uri = `/placements?store_id=${router.user.selectedStore}`
+            router.myrecoApi.get(uri, this.updateViewCallback)
         }
 
-        this.updateViewCallback = (response) => {
-            this.placementsViewData = (response != undefined) ? response.body : []
+        updateViewCallback(response) {
+            this.placementsViewData = (response != undefined) ? response.body : {}
             this.update()
         }
 
-        this.createOnClick = () => {
-            route('placements/create')
+        createOnClick() {
+            router.route('/placements/create')
         }
 
-        this.editOnClick = (event) => {
-            route(`placements/edit/${event.item.small_hash}`)
+        editOnClick(event) {
+            router.route(`/placements/edit?small_hash=${event.item.placement.small_hash}`)
         }
 
-        this.deleteOnClick = (event) => {
-            uri = `/placements/${event.item.small_hash}`
+        deleteOnClick(event) {
+            uri = `/placements/${event.item.placement.small_hash}`
             callback = () => { this.updateView() }
-            opts.app.myrecoApi.delete(uri, callback, opts.app.failure)
+            router.myrecoApi.delete(uri, callback)
         }
 
         this.on('mount', this.updateView)

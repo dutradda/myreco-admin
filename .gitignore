@@ -1,2 +1,5 @@
 myreco-admin.sublime-*
 node_modules
+config.js
+src/images/favicon.png
+src/images/logo.png

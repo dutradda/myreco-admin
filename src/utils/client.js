@@ -20,12 +20,15 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE. */
 
+'use strict;'
+
 
 class MyrecoClient {
-  constructor(api_uri, user, password) {
+  constructor(api_uri, user, password, failureDecorator) {
     this.api_uri = api_uri
     this.user = user
     this.password = password
+    this.failureDecorator = failureDecorator
   }
 
   setUser(user, password) {
@@ -34,32 +37,32 @@ class MyrecoClient {
   }
 
   get(sufix, success, failure, query, data) {
-    let url = this._process_url(sufix)
-    return this._process_request(superagent.get(url), query, data, success, failure)
+    let url = this._processUrl(sufix)
+    return this._processRequest(superagent.get(url), query, data, success, failure)
   }
 
-  _process_url(sufix) {
+  _processUrl(sufix) {
     return `${this.api_uri}${sufix}`
   }
 
-  _process_request(req, query, data, success, failure) {
+  _processRequest(req, query, data, success, failure) {
     if (this.user != undefined && this.password != undefined)
       req = req.auth(this.user, this.password)
-    return req.query(query).send(data).then(success, failure)
+    return req.query(query).send(data).then(success, this.failureDecorator(failure))
   }
 
   post(sufix, success, failure, query, data) {
-    let url = this._process_url(sufix)
-    return this._process_request(superagent.post(url), query, data, success, failure)
+    let url = this._processUrl(sufix)
+    return this._processRequest(superagent.post(url), query, data, success, failure)
   }
 
   patch(sufix, success, failure, query, data) {
-    let url = this._process_url(sufix)
-    return this._process_request(superagent.patch(url), query, data, success, failure)
+    let url = this._processUrl(sufix)
+    return this._processRequest(superagent.patch(url), query, data, success, failure)
   }
 
   delete(sufix, success, failure, query, data) {
-    let url = this._process_url(sufix)
-    return this._process_request(superagent.delete(url), query, data, success, failure)
+    let url = this._processUrl(sufix)
+    return this._processRequest(superagent.delete(url), query, data, success, failure)
   }
 }
