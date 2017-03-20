@@ -1,4 +1,5 @@
 <placement-edit>
+    <edit-header></edit-header>
     <alert ref="alert"></alert>
     <div ref="content" style="margin-bottom:2em;">
         <div>
@@ -19,7 +20,7 @@
             </div>
             <div>
                 <label><b>Store:</b></label>
-                <stores-select user={router.user} onchange={this.chooseStore}/>
+                <stores-select user={this.user} onchange_callback={this.chooseStore} disabled={true}/>
             </div>
             <div>
                 <label>
@@ -40,11 +41,8 @@
                 </label>
             </div>
             <div style="margin-bottom:0.2em;" if={this.placementViewData.variations.length != 0}>
-                <div>
-                    <div style="font-weight:700;text-align:center;">
-                        <div>Variations</div>
-                    </div>
-                </div>
+                <br/>
+                <label><b>Variations:</b></label>
                 <virtual each={variation in this.placementViewData.variations}>
                     <div>
                         <variation-edit variation={variation} app={app}/>
@@ -69,6 +67,7 @@
         this.patchedVariations = []
         this.placementViewData = {variations: []}
         this.small_hash = simpleQueryString.parse(document.location.href).small_hash
+        this.user = router.user
 
         updateView() {
             if (this.small_hash == undefined) {
@@ -153,6 +152,9 @@
 
                     placementPatch.variations.push(newVariation)
                 }
+
+            if (!placementPatch.variations.length)
+                delete placementPatch.variations
 
             if (!Object.keys(placementPatch).length) {
                 router.success('/placements')()

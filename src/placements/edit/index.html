@@ -7,11 +7,6 @@
     <link rel="shortcut icon" type="image/png" href="/images/favicon.png"/>
   </head>
   <body>
-    <page-header></page-header>
-    <page-menu></page-menu>
-    <logout-button></logout-button>
-    <br/><br/>
-    <alert></alert>
     <placement-edit></placement-edit>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/riot/3.2/riot+compiler.min.js"></script>
@@ -21,11 +16,13 @@
     <script type="text/babel" src="/config.js"></script>
     <script type="text/babel" src="/utils/client.js"></script>
     <script type="text/babel" src="/utils/router.js"></script>
-    <script type="riot/tag" src="/common-tags/page-header.tag"></script>
+    <script type="riot/tag" src="/common-tags/edit-header.tag"></script>
+    <script type="riot/tag" src="/common-tags/simple-header.tag"></script>
     <script type="riot/tag" src="/common-tags/page-menu.tag"></script>
     <script type="riot/tag" src="/common-tags/logout-button.tag"></script>
-    <script type="riot/tag" src="/common-tags/alert.tag"></script>
     <script type="riot/tag" src="/placements/placement-edit.tag"></script>
+    <script type="riot/tag" src="/common-tags/stores-select.tag"></script>
+    <script type="riot/tag" src="/common-tags/alert.tag"></script>
     <script type="riot/tag" src="/placements/variation-edit.tag"></script>
     <script type="text/babel">
       riot.mount('*')

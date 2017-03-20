@@ -1,4 +1,5 @@
 <login>
+    <simple-header title={this.opts.title}></simple-header>
 	<div>
 	    <h1>Please login</h1>
     	<input type="text" ref="email">

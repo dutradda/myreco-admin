@@ -1,5 +1,5 @@
 <variation-edit>
-    <fieldset>
+    <fieldset style="width:40em;">
         <div if={this.opts.variation.id}>
             Id: {this.opts.variation.id}
             <br/>

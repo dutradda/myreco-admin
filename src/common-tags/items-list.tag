@@ -1,7 +1,6 @@
-<placements-list>
-    <list-header></list-header>
-    <button onclick={createOnClick}><b>New Placement</b></button>
+<items-list>
     <virtual if={placementsViewData != undefined}>
+        <button onclick={createOnClick}><b>New Placement</b></button>
         <br/><br/>
         <table style="border: 1px solid;">
             <thead>
@@ -76,7 +75,7 @@
         'use strict;'
 
         this.updateView = () => {
-            let uri = `/placements?store_id=${router.user.selectedStore}`
+            let uri = `/${this.opts.itemsName}?store_id=${router.user.selectedStore}`
             router.myrecoApi.get(uri, this.updateViewCallback)
         }
 
@@ -86,15 +85,16 @@
         }
 
         createOnClick() {
-            router.route('/placements/create')
+            router.route('/${this.opts.itemsName}/create')
         }
 
         editOnClick(event) {
-            router.route(`/placements/edit?small_hash=${event.item.placement.small_hash}`)
+            queryString.stringify
+            router.route(`/${this.opts.itemsName}/edit?small_hash=${event.item.item.small_hash}`)
         }
 
         deleteOnClick(event) {
-            uri = `/placements/${event.item.placement.small_hash}`
+            uri = `/${this.opts.itemsName}/${event.item.item.small_hash}`
             callback = () => { this.updateView() }
             router.myrecoApi.delete(uri, callback)
         }
@@ -102,4 +102,4 @@
         this.on('mount', this.updateView)
     </script>
 
-</placements-list>
+</items-list>

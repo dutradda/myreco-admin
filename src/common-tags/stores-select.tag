@@ -1,15 +1,19 @@
 <stores-select>
-    <select id="store" onchange={this.chooseStore}>
-        <option each={store in this.user.stores} value={store.id} selected="{(store.id == user.selectedStore)}">{name}</option>
+    <select id="store" disabled={this.opts.disabled}>
+        <option each={store in this.stores} value={store.id} selected="{(store.id == router.user.selectedStore)}">{store.name}</option>
     </select>
 
      <script>
-         'use strict;'
-         this.user = this.opts.user
+        'use strict;'
 
-        chooseStore(event) {
-            this.user.selectedStore = JSON.parse(event.target.options[event.target.selectedIndex].value)
-            router.setUser(this.user)
+        getStores(event) {
+            router.myrecoApi.get('/stores', this.getStoresCallback, this.parent.failure)
         }
+
+        getStoresCallback(response) {
+            this.update({stores: response.body})
+        }
+
+        this.on('mount', this.getStores)
      </script>
 </stores-select>
