@@ -7,14 +7,34 @@
     <link rel="shortcut icon" type="image/png" href="/images/favicon.png"/>
   </head>
   <body>
+    <myreco-admin />
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/riot/3.2/riot+compiler.min.js"></script>
+    <script src="https://rawgit.com/dutradda/route/enable_agnostic_router_on_route_tags/dist/route%2Btag.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/2.3.0/superagent.min.js"></script>
     <script src="https://cdn.bootcss.com/store.js/1.3.20/store.min.js"></script>
     <script type="text/babel" src="/config.js"></script>
     <script type="text/babel" src="/utils/client.js"></script>
-    <script type="text/babel" src="/utils/router.js"></script>
+    <script type="text/babel" src="/utils/misc.js"></script>
+    <script type="riot/tag" src="/myreco-admin.tag"></script>
+    <script type="riot/tag" src="/not-found.tag"></script>
+    <script type="riot/tag" src="/login.tag"></script>
+    <script type="riot/tag" src="/logout.tag"></script>
+    <script type="riot/tag" src="/common-tags/list-header.tag"></script>
+    <script type="riot/tag" src="/common-tags/store-chooser.tag"></script>
+    <script type="riot/tag" src="/common-tags/stores-select.tag"></script>
+    <script type="riot/tag" src="/common-tags/page-menu.tag"></script>
+    <script type="riot/tag" src="/common-tags/logout-button.tag"></script>
+    <script type="riot/tag" src="/common-tags/edit-header.tag"></script>
+    <script type="riot/tag" src="/common-tags/alert.tag"></script>
+    <script type="riot/tag" src="/placements/placements-router.tag"></script>
+    <script type="riot/tag" src="/placements/placements-list.tag"></script>
+    <script type="riot/tag" src="/placements/placement-edit.tag"></script>
+    <script type="riot/tag" src="/placements/variation-edit.tag"></script>
+    <!-- <script type="riot/tag" src="/common-tags/engines-select.tag"></script> -->
+    <!-- <script type="riot/tag" src="/slots.tag"></script> -->
     <script type="text/babel">
-      router.login(router.myrecoApi.user, router.myrecoApi.password)
+      riot.mount('myreco-admin')
     </script>
   </body>
 </html>

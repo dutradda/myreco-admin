@@ -51,6 +51,5 @@ function findCallback(key, key_name) {
 var utils = {
     hasKey: hasKey,
     removeItemFromArray: removeItemFromArray,
-    getSelectValue: getSelectValue,
     findCallback: findCallback
 }

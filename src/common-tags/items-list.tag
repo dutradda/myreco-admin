@@ -75,8 +75,8 @@
         'use strict;'
 
         this.updateView = () => {
-            let uri = `/${this.opts.itemsName}?store_id=${router.user.selectedStore}`
-            router.myrecoApi.get(uri, this.updateViewCallback)
+            let uri = `/${this.opts.itemsName}?store_id=${this.opts.myreco_client.user.selectedStore}`
+            this.opts.myreco_client.get(uri, this.updateViewCallback)
         }
 
         updateViewCallback(response) {
@@ -85,18 +85,18 @@
         }
 
         createOnClick() {
-            router.route('/${this.opts.itemsName}/create')
+            route('/${this.opts.itemsName}/create')
         }
 
         editOnClick(event) {
             queryString.stringify
-            router.route(`/${this.opts.itemsName}/edit?small_hash=${event.item.item.small_hash}`)
+            route(`/${this.opts.itemsName}/edit?small_hash=${event.item.item.small_hash}`)
         }
 
         deleteOnClick(event) {
             uri = `/${this.opts.itemsName}/${event.item.item.small_hash}`
             callback = () => { this.updateView() }
-            router.myrecoApi.delete(uri, callback)
+            this.opts.myreco_client.delete(uri, callback)
         }
 
         this.on('mount', this.updateView)

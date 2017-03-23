@@ -45,7 +45,7 @@
         }
 
         this.getPatchedVariation = () => {
-            patchedVariation = this.parent.patchedVariations.find(router.findCallback(opts.variation.id))
+            patchedVariation = this.parent.patchedVariations.find(utils.findCallback(opts.variation.id))
             if (patchedVariation == undefined) {
                 patchedVariation = {id: opts.variation.id, _operation: 'update'}
                 this.parent.patchedVariations.push(patchedVariation)
@@ -69,7 +69,7 @@
         }
 
         this.removeSlotFromPatchedVariation = (patchedVariation, slotId) => {
-            let slotFound = patchedVariation.slots.find(router.findCallback(slotId))
+            let slotFound = patchedVariation.slots.find(utils.findCallback(slotId))
             this.parent.removeItemFromArray(patchedVariation.slots, slotFound)
             this.deleteEmptySlots(patchedVariation)
         }
@@ -105,14 +105,15 @@
         }
 
         this.setAvailableSlots = (callback) => {
-            router.myrecoApi.get(`/slots?store_id=${router.user.selectedStore}`, callback, this.failure)
+            selectedStore = this.opts.myreco_client.user.selectedStore
+            this.opts.myreco_client.get(`/slots?store_id=${selectedStore}`, callback, this.failure)
         }
 
         this.getSlotsCallback = (response) => {
             this.available_slots = []
 
             for (let slot of response.body) {
-                if (opts.variation.slots == undefined || opts.variation.slots.find(router.findCallback(slot.id)) == undefined)
+                if (opts.variation.slots == undefined || opts.variation.slots.find(utils.findCallback(slot.id)) == undefined)
                     this.available_slots.push(slot)
             }
 
@@ -149,8 +150,6 @@
         this.failure = (error) => {
             if (error.response.status == 404)
                 this.disableSlotsSelect()
-            else
-                router.failure(error)
         }
 
         this.on('mount', () => {this.setAvailableSlots(this.getSlotsCallback)})

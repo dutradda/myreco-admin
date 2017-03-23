@@ -9,7 +9,7 @@
         this.selectedEngine = undefined
 
         getEngines(event) {
-            router.myrecoApi.get(`/engines?store_id=${router.user.selectedStore}`, this.getEnginesCallback, this.parent.failure)
+            this.opts.myreco_client.get(`/engines?store_id=${this.opts.myreco_client.user.selectedStore}`, this.getEnginesCallback, this.parent.failure)
         }
 
         getEnginesCallback(response) {

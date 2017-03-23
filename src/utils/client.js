@@ -22,47 +22,90 @@
 
 'use strict;'
 
-
 class MyrecoClient {
-  constructor(api_uri, user, password, failureDecorator) {
-    this.api_uri = api_uri
-    this.user = user
-    this.password = password
-    this.failureDecorator = failureDecorator
-  }
+    constructor(api_uri, invalidAuthCb) {
+        this.api_uri = api_uri
+        this.invalidAuthCb = invalidAuthCb
+        this.setUser()
+    }
 
-  setUser(user, password) {
-    this.user = user
-    this.password = password
-  }
+    setUser(user) {
+        if (!user) {
+            user = store.get('myrecoUser')
+            if (!user)
+                user = {}
+        }
+        this.user = user
+    }
 
-  get(sufix, success, failure, query, data) {
-    let url = this._processUrl(sufix)
-    return this._processRequest(superagent.get(url), query, data, success, failure)
-  }
+    setUserSelectedStore(selectedStore) {
+      this.user.selectedStore = selectedStore
+      store.set('myrecoUser', this.user)
+    }
 
-  _processUrl(sufix) {
-    return `${this.api_uri}${sufix}`
-  }
+    validateUser(successCb, failureCb) {
+        let thisSuccessCb = (response) => {
+            response.body.password = this.user.password
+            this.user = response.body
 
-  _processRequest(req, query, data, success, failure) {
-    if (this.user != undefined && this.password != undefined)
-      req = req.auth(this.user, this.password)
-    return req.query(query).send(data).then(success, this.failureDecorator(failure))
-  }
+            if (this.user.selectedStore == undefined && this.user.stores.length > 0) {
+                this.setUserSelectedStore(this.user.stores[0].id)
+                successCb(this.user)
+            } else
+                failureCb(response, this.user)
+        }
 
-  post(sufix, success, failure, query, data) {
-    let url = this._processUrl(sufix)
-    return this._processRequest(superagent.post(url), query, data, success, failure)
-  }
+        this.get(`/users/${this.user.email}`, thisSuccessCb, failureCb)
+    }
 
-  patch(sufix, success, failure, query, data) {
-    let url = this._processUrl(sufix)
-    return this._processRequest(superagent.patch(url), query, data, success, failure)
-  }
+    delUser() {
+        this.user = undefined
+        store.remove('myrecoUser')
+    }
 
-  delete(sufix, success, failure, query, data) {
-    let url = this._processUrl(sufix)
-    return this._processRequest(superagent.delete(url), query, data, success, failure)
-  }
+    get(sufix, success, failure, query, data) {
+        let url = this._processUrl(sufix)
+        return this._processRequest(superagent.get(url), query, data, success, failure)
+    }
+
+    _processUrl(sufix) {
+        return `${this.api_uri}${sufix}`
+    }
+
+    _processRequest(req, query, data, success, failure) {
+        if (this.user)
+            req = req.auth(this.user.email, this.user.password)
+
+        return req.query(query).send(data).then(success, this.failureDecorator(failure))
+    }
+
+    post(sufix, success, failure, query, data) {
+        let url = this._processUrl(sufix)
+        return this._processRequest(superagent.post(url), query, data, success, failure)
+    }
+
+    patch(sufix, success, failure, query, data) {
+        let url = this._processUrl(sufix)
+        return this._processRequest(superagent.patch(url), query, data, success, failure)
+    }
+
+    delete(sufix, success, failure, query, data) {
+        let url = this._processUrl(sufix)
+        return this._processRequest(superagent.delete(url), query, data, success, failure)
+    }
+
+    failureDecorator(failure) {
+        return (error) => {
+            console.log(error)
+
+            if (error.response.status == 401 || error.response.status == 403) {
+                this.delUser()
+                this.invalidAuthCb(error)
+            }
+
+            else if (failure != undefined) {
+                failure(error)
+            }
+        }
+    }
 }

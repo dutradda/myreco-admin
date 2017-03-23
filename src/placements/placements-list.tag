@@ -1,5 +1,5 @@
 <placements-list>
-    <list-header></list-header>
+    <list-header myreco_client={this.opts.myreco_client}></list-header>
     <button onclick={createOnClick}><b>New Placement</b></button>
     <virtual if={placementsViewData != undefined}>
         <br/><br/>
@@ -76,8 +76,8 @@
         'use strict;'
 
         this.updateView = () => {
-            let uri = `/placements?store_id=${router.user.selectedStore}`
-            router.myrecoApi.get(uri, this.updateViewCallback)
+            let uri = `/placements?store_id=${this.opts.myreco_client.user.selectedStore}`
+            this.opts.myreco_client.get(uri, this.updateViewCallback)
         }
 
         updateViewCallback(response) {
@@ -86,17 +86,17 @@
         }
 
         createOnClick() {
-            router.route('/placements/create')
+            route('placements/create')
         }
 
         editOnClick(event) {
-            router.route(`/placements/edit?small_hash=${event.item.placement.small_hash}`)
+            route(`placements/edit/${event.item.placement.small_hash}`)
         }
 
         deleteOnClick(event) {
             uri = `/placements/${event.item.placement.small_hash}`
             callback = () => { this.updateView() }
-            router.myrecoApi.delete(uri, callback)
+            this.opts.myreco_client.delete(uri, callback)
         }
 
         this.on('mount', this.updateView)

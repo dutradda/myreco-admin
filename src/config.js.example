@@ -2,5 +2,6 @@
 
 var CONFIG = {
     apiUriPrefix: 'http://localhost:10000'
-    title: 'Myreco Administration'
+    title: 'Myreco Administration',
+    routePrefix: '/'
 } 

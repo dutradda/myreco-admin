@@ -3,7 +3,7 @@
     <alert ref="alert"></alert>
     <div ref="content" style="margin-bottom:2em;">
         <div>
-            {((this.create) ? 'New ' : 'Edit ') + 'Placement'}
+            <h3>{((this.create) ? 'New ' : 'Edit ') + 'Placement'}</h3>
         </div>
         <fieldset>
             <div if={this.placementViewData.hash}>
@@ -20,7 +20,7 @@
             </div>
             <div>
                 <label><b>Store:</b></label>
-                <stores-select user={this.user} onchange_callback={this.chooseStore} disabled={true}/>
+                <stores-select user={this.user} onchange_callback={this.chooseStore} disabled={true} myreco_client={this.opts.myreco_client}/>
             </div>
             <div>
                 <label>
@@ -45,7 +45,7 @@
                 <label><b>Variations:</b></label>
                 <virtual each={variation in this.placementViewData.variations}>
                     <div>
-                        <variation-edit variation={variation} app={app}/>
+                        <variation-edit variation={variation} myreco_client={this.parent.opts.myreco_client}/>
                         <br/>
                         <button onclick={this.deleteVariationOnClick}><b>Delete Variation</b></button>
                     </div>
@@ -66,18 +66,18 @@
         this.placementPatch = {}
         this.patchedVariations = []
         this.placementViewData = {variations: []}
-        this.small_hash = simpleQueryString.parse(document.location.href).small_hash
-        this.user = router.user
+        // this.small_hash = route.query().small_hash
+        this.user = opts.myreco_client.user
 
         updateView() {
             if (this.small_hash == undefined) {
                 this.create = true
-                this.placementPatch.store_id = JSON.parse(router.user.selectedStore)
+                this.placementPatch.store_id = JSON.parse(this.user.selectedStore)
                 this.update()
             } else {
                 this.placementViewData = {}
                 let uri = `/placements/${this.small_hash}`
-                router.myrecoApi.get(uri, this.updateViewCallback, this.failure)
+                this.opts.myreco_client.get(uri, this.updateViewCallback, this.failure)
             }
         }
 
@@ -130,13 +130,13 @@
         }
 
         cancelOnClick() {
-            router.route('/placements')
+            route('/placements')
         }
 
         okOnClick() {
-            let small_hash = this.placementViewData.small_hash
-            let uri = null
-            let placementPatch = this.cloneObject(this.placementPatch)
+            small_hash = this.placementViewData.small_hash
+            uri = null
+            placementPatch = this.cloneObject(this.placementPatch)
             placementPatch.variations = [].concat(this.patchedVariations)
 
             for (let variation of this.placementViewData.variations)
@@ -156,17 +156,19 @@
             if (!placementPatch.variations.length)
                 delete placementPatch.variations
 
+            success = () => route('/placements')
+
             if (!Object.keys(placementPatch).length) {
-                router.success('/placements')()
+                route('/placements')
             }
 
             else if (this.create) {
                 uri = '/placements'
-                router.myrecoApi.post(uri, router.success('/placements'), this.failure, undefined, [placementPatch])
+                this.opts.myreco_client.post(uri, success, this.failure, undefined, [placementPatch])
             }
             else {
                 uri = `/placements/${small_hash}`
-                router.myrecoApi.patch(uri, router.success('/placements'), this.failure, undefined, placementPatch)
+                this.opts.myreco_client.patch(uri, success, this.failure, undefined, placementPatch)
             }
         }
 
@@ -186,6 +188,7 @@
         }
 
         this.on('mount', this.updateView)
+        this.on('route', small_hash => this.small_hash = small_hash)
     </script>
 
 </placement-edit>

@@ -14,7 +14,7 @@
         }
 
         setAvailableSlots(callback) {
-            router.myrecoApi.get(`/slots?store_id=${router.user.selectedStore}`, callback, this.parent.failure)
+            this.opts.myreco_client.get(`/slots?store_id=${this.opts.myreco_client.user.selectedStore}`, callback, this.parent.failure)
         }
 
         getSlotsCallback(response) {
