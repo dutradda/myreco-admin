@@ -181,7 +181,10 @@
 
         failure(error) {
             if (error.response.status == 400) {
-                this.refs.alert.showAlert(error.response.body.message)
+                message = error.response.body.message
+                message = message ? message : error.response.body['database message'].message
+                this.refs.alert.showAlert(message)
+                console.log(error.response.body)
             } else if (error.response.status == 404) {
                 this.refs.content.textContent = 'Placement not found'
             }

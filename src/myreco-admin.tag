@@ -2,11 +2,12 @@
     <div>
         <img src="/images/logo.png" style="background-color:black; border:4px black solid;"/>
         <div>
-            <h1>{this.title}</h1>
+            <h1><a href="/">{this.title}</a></h1>
         </div>
     </div>
     <router>
-        <placements-router myreco_client={this.parent.myrecoClient}/>
+        <placements myreco_client={this.parent.myrecoClient}/>
+        <slots myreco_client={this.parent.myrecoClient}/>
         <route path="">
             <placements-redirect />
         </route>

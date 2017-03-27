@@ -1,102 +1,61 @@
 <items-list>
-    <virtual if={placementsViewData != undefined}>
-        <button onclick={createOnClick}><b>New Placement</b></button>
+    <list-header myreco_client={this.opts.myreco_client} current_menu_item={this.config.currentMenuItem}></list-header>
+    <button onclick={this.createOnClick}><b>New {this.opts.config.collectionName}</b></button>
+    <virtual if={this.collectionData}>
         <br/><br/>
         <table style="border: 1px solid;">
             <thead>
                 <tr>
-                    <th style="border-top: 1px solid;">Name</th>
-                    <th style="border-top: 1px solid;">Small Hash</th>
-                    <th style="border-top: 1px solid;">Distribute</th>
-                    <th style="border-top: 1px solid;">Show Details</th>
-                    <th style="border-top: 1px solid;">In A/B Test</th>
+                    <th style="border-top: 1px solid;" each={propertyName in this.config.properties.names}>
+                        {propertyName}
+                    </th>
                     <th style="border-top: 1px solid;">Edit</th>
                     <th style="border-top: 1px solid;">Delete</th>
                 </tr>
             </thead>
-            <tbody each={placement in placementsViewData}>
+            <tbody each={item in collectionData}>
                 <tr style="text-align:center;">
-                    <th style="border-top: 1px solid;">{placement.name}</th>
-                    <th style="border-top: 1px solid;">{placement.small_hash}</th>
-                    <th style="border-top: 1px solid;">{placement.distribute_recos}</th>
-                    <th style="border-top: 1px solid;">{placement.show_details}</th>
-                    <th style="border-top: 1px solid;">{placement.ab_testing}</th>
+                    <th style="border-top: 1px solid;" each={propertyId in this.config.properties.ids}>
+                        {item[propertyId]}
+                    </th>
                     <th style="border-top: 1px solid;"><button onclick={this.editOnClick}>Edit</button></th>
                     <th style="border-top: 1px solid;"><button onclick={this.deleteOnClick}>Delete</button></th>
                 </tr>
                 <tr>
-                    <td colspan="7" style="border: 1px solid;">
-                        Variations:
-                        <table style="margin-left:2em;">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Weight</th>
-                                </tr>
-                            </thead>
-                            <tbody each={variation in placement.variations}>
-                                <tr style="text-align:center;">
-                                    <td>{variation.id}</td>
-                                    <td>{variation.weight ? JSON.stringify(variation.weigth) : 'null'}</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" style="border: 1px solid;">
-                                        Slots:
-                                        <table style="margin-left:2em;">
-                                            <thead>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Name</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody each={slot in variation.slots}>
-                                                <tr style="text-align:center;">
-                                                    <td>{slot.id}</td>
-                                                    <td>{slot.name}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="2">
-                                                        
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <td colspan={this.config.details.colspan}>
+                        <div data-is={this.config.details.tagName} data={item}></div>
                     </td>
                 </tr>
+                <tr><td colspan={this.config.details.colspan}><br/></td></tr>
             </tbody>
         </table>
     </virtual>
 
     <script>
         'use strict;'
+        this.config = this.opts.config
 
         this.updateView = () => {
-            let uri = `/${this.opts.itemsName}?store_id=${this.opts.myreco_client.user.selectedStore}`
+            let uri = `/${this.opts.config.collectionUri}?store_id=${this.opts.myreco_client.user.selectedStore}`
             this.opts.myreco_client.get(uri, this.updateViewCallback)
         }
 
         updateViewCallback(response) {
-            this.placementsViewData = (response != undefined) ? response.body : {}
+            this.collectionData = (response != undefined) ? response.body : {}
             this.update()
         }
 
-        createOnClick() {
-            route('/${this.opts.itemsName}/create')
+        this.createOnClick = () => {
+            route(`${this.opts.config.collectionUri}/create`)
         }
 
         editOnClick(event) {
-            queryString.stringify
-            route(`/${this.opts.itemsName}/edit?small_hash=${event.item.item.small_hash}`)
+            route(`${this.opts.config.collectionUri}/edit/${event.item.item[this.opts.config.itemId]}`)
         }
 
         deleteOnClick(event) {
-            uri = `/${this.opts.itemsName}/${event.item.item.small_hash}`
-            callback = () => { this.updateView() }
-            this.opts.myreco_client.delete(uri, callback)
+            uri = `/${this.opts.config.collectionUri}/${event.item.item[this.opts.config.itemId]}`
+            this.opts.myreco_client.delete(uri, this.updateView)
         }
 
         this.on('mount', this.updateView)

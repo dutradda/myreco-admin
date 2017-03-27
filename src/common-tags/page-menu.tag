@@ -2,10 +2,14 @@
     <div>
         <b>Menu</b>
         <ul>
-            <li each={menuItem in this.menu}><a href={menuItem.href}>{menuItem.title}</a></li>
+            <li each={menuItem in this.menu}>
+                <a href={menuItem.href} if={this.currentItem != menuItem.title}>{menuItem.title}</a>
+                <a if={this.currentItem == menuItem.title}>{menuItem.title}</a>
+            </li>
         </ul>
     </div>
     <script>
+        this.currentItem = this.opts.current_item
         this.menu = {
             placements : {
                 title: 'Placements',
